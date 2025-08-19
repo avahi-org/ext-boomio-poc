@@ -10,7 +10,7 @@ from string import Template
 
 from src.config import Config
 from src.models.payload import Payload
-from s3_client import S3Client
+from src.adapters.s3_client import S3Client
 
 bedrock = boto3.client(
     "bedrock-runtime",
