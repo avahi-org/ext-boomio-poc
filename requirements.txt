@@ -1,0 +1,7 @@
+fastapi
+mangum
+requests
+httpx
+botocore
+boto3
+python-multipart
