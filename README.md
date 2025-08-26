@@ -1,2 +1,0 @@
-# ext-boomio-poc
-
