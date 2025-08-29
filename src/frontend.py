@@ -18,11 +18,11 @@ with spc_2:
     st.image("src/boomio_logo.svg", width=800)
 
 st.title("🎨 Boomio game assets generator")
-st.subheader("This platform allows you to generate individual game assets (characters, obstacles, backgrounds) based on prompts and pre-processing.")
-st.subheader("Guidelines:")
-st.subheader("1. Write a prompt with the specifications for the game asset you want to generate.")
-st.subheader("2. Click the **Generate Image** button to create the asset.")
-st.subheader("3. Repeat the process for each game asset, or create new ones by following the same steps.")
+st.markdown("##### This platform allows you to generate individual game assets (characters, obstacles, backgrounds) based on prompts and pre-processing.")
+st.markdown("##### Guidelines:")
+st.markdown("1. Write a prompt with the specifications for the game asset you want to generate.")
+st.markdown("2. Click the **Generate Image** button to create the asset.")
+st.markdown("3. Repeat the process for each game asset, or create new ones by following the same steps.")
 
 col1, col2 = st.columns([1, 1])
 col3, col4 = st.columns([1, 1])
