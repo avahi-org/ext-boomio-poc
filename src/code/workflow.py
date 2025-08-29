@@ -7,7 +7,7 @@ import websocket
 import io
 import random
 from PIL import Image
-from code.config import Config
+from src.code.config import Config
 
 class Workflow:
 

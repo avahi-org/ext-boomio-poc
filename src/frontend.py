@@ -1,8 +1,8 @@
 import streamlit as st
 import io
 from PIL import Image
-from code.workflow import Workflow
-from code.config import Config
+from src.code.workflow import Workflow
+from src.code.config import Config
 # --- Configuration ---
 # You need to replace this with your ComfyUI server address
 # The address should not include http:// or ws://
