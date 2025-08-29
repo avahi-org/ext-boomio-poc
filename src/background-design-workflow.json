@@ -1,9 +1,9 @@
 {
   "1": {
     "inputs": {
-      "seed": 861617944471034,
+      "seed": 304115933006340,
       "steps": 40,
-      "cfg": 5,
+      "cfg": 4.5,
       "sampler_name": "euler",
       "scheduler": "simple",
       "denoise": 1,
@@ -40,7 +40,7 @@
   },
   "3": {
     "inputs": {
-      "text": "realistic, photorealistic, text, watermark, logo, noise, blur, overly detailed, messy, dark colors, malformed shapes\n",
+      "text": "text, watermark, logo, blur, noise, messy composition",
       "clip": [
         "2",
         1
@@ -83,7 +83,7 @@
     "inputs": {
       "format": "PNG",
       "images": [
-        "4",
+        "13",
         0
       ]
     },
@@ -94,8 +94,8 @@
   },
   "11": {
     "inputs": {
-      "width": 584,
-      "height": 672,
+      "width": 832,
+      "height": 1360,
       "batch_size": 1
     },
     "class_type": "EmptyLatentImage",
@@ -105,7 +105,7 @@
   },
   "12": {
     "inputs": {
-      "text": "Cartoon-style endless runner game background, inspired by Flappy Bird.  \nBright blue sky with soft gradient from light blue at the top to pale blue near the horizon.  \nScattered fluffy white clouds in the sky.  \nGreen rolling hills and distant landscape near the bottom, with a simple flat ground area.  \nPlayful, colorful, vector-like style, minimal details, clean and iconic.  \nSeamless, wide horizontal composition for scrolling.  \nHigh resolution, 1920x1080 pixels.\n",
+      "text": "A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style.\nBright colorful sky with a magical gradient (purple, pink, and turquoise).  \nFloating glowing clouds and sparkles in the air.  \nMystical floating islands and crystal mountains in the distance.  \nFlatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms.  \nPlayful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. ",
       "clip": [
         "2",
         1
@@ -114,6 +114,36 @@
     "class_type": "CLIPTextEncode",
     "_meta": {
       "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "13": {
+    "inputs": {
+      "mode": "resize",
+      "supersample": "true",
+      "resampling": "lanczos",
+      "rescale_factor": 1,
+      "resize_width": 416,
+      "resize_height": 672,
+      "image": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "Image Resize",
+    "_meta": {
+      "title": "Image Resize"
+    }
+  },
+  "14": {
+    "inputs": {
+      "images": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
     }
   }
 }

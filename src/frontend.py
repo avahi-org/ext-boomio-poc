@@ -9,12 +9,21 @@ from src.code.config import Config
 
 # --- App Configuration and Title ---
 st.set_page_config(
-    page_title="Boomio game assests generator",
+    page_title="Boomio game assets generator",
     page_icon="🎨",
     layout="wide"
 )
+spc_1, spc_2, spc_3 = st.columns([2, 2, 2]) # Adjust ratios for desired spacing
+with spc_2:
+    st.image("src/boomio_logo.svg", width=800)
 
-st.title("🎨 Boomio game assests generator")
+st.title("🎨 Boomio game assets generator")
+st.subheader("This platform allows you to generate individual game assets (characters, obstacles, backgrounds) based on prompts and pre-processing.")
+st.subheader("Guidelines:")
+st.subheader("1. Write a prompt with the specifications for the game asset you want to generate.")
+st.subheader("2. Click the **Generate Image** button to create the asset.")
+st.subheader("3. Repeat the process for each game asset, or create new ones by following the same steps.")
+
 col1, col2 = st.columns([1, 1])
 col3, col4 = st.columns([1, 1])
 col5, col6 = st.columns([1, 1])
@@ -32,11 +41,12 @@ with st.container():
     # --- User Input Section (on the left) ---
     with col1:
         # --- Main Columns for Layout ---
-        st.header("1. Input Prompt character")
+        st.header("1. Input prompt character")
         # A text area for the user to enter the image generation prompt.
         prompt_character = st.text_area(
             "Enter your prompt for image generation here:",
             height=150,
+            value="Pixel art a detailed, full-body, character of a cute and cheerful brown sloth name sloth. The sloth is wearing a vibrant blue superhero cape and a white headband with red and blue stripes. The art style is crisp and clean, with a simple color palette that highlights the character's features. Add flapping cycle pose on mid air. ",
             placeholder="Pixel art a detailed, full-body, character of a cute and cheerful brown sloth name sloth. The sloth is wearing a vibrant blue superhero cape and a white headband with red and blue stripes. The art style is crisp and clean, with a simple color palette that highlights the character's features. Add flapping cycle pose on mid air. "
             , key="area 1"
         )
@@ -44,7 +54,7 @@ with st.container():
 
     # --- Generated Image Output Section (on the right) ---
     with col2:
-        st.header("2. Generated Image")
+        st.header("2. Character generated image")
         # --- Button to Trigger Generation ---
         # This is a placeholder for where you would add your generation logic.
         with st.spinner("Generating..."):
@@ -80,17 +90,18 @@ with st.container():
                             st.error("Failed to update the workflow. Please check your workflow file.")
         #st.subheader("Character Generated Images:")
         if st.session_state.generated_image_character:
-            st.image(st.session_state.generated_image_character, caption="Generated Character")
+            st.image(st.session_state.generated_image_character, caption="Generated character")
 
 with st.container():
     # --- User Input Section (on the left) ---
     with col3:
         # --- Main Columns for Layout ---
-        st.header("3. Input Prompt Obstacles")
+        st.header("3. Input prompt obstacles")
         # A text area for the user to enter the image generation prompt.
         prompt_obstacles = st.text_area(
             "Enter your prompt for image generation here:",
             height=150,
+            value="Vertical obstacles shaped like magical crystal spires for a fantasy mobile game.Tall, jagged crystalline columns glowing in bright colors (blue, purple, pink), semi-transparent with shiny facets.Stylized, clean, playful design with glowing edges and magical aura.Vector-like style, smooth and iconic, suitable for 2D game assets. White or transparent background. High resolution, 512x1024 pixels.",
             placeholder="Cartoon-style vertical pipes for a Flappy Bird–like mobile game.Tall cylindrical columns with glossy metallic surface, bright green color, slight highlights and shading for a 3D look. Smooth, simple, iconic design with rounded edges. Clean vector-like style, playful, suitable for 2D mobile game assets. White or transparent background. High resolution, 256x1024 pixels."
             , key="area 2"
         )
@@ -98,7 +109,7 @@ with st.container():
 
     # --- Generated Image Output Section (on the right) ---
     with col4:
-        st.header("4. Obstacles generated Image ")
+        st.header("4. Obstacles generated image ")
         # --- Button to Trigger Generation ---
         # This is a placeholder for where you would add your generation logic.
         with st.spinner("Generating..."):
@@ -133,25 +144,26 @@ with st.container():
                         else:
                             st.error("Failed to update the workflow. Please check your workflow file.")
         if st.session_state.generated_image_obstacle:
-            st.image(st.session_state.generated_image_obstacle, caption="Generated Obstacle")
+            st.image(st.session_state.generated_image_obstacle, caption="Generated obstacle")
 
 with st.container():
     # --- User Input Section (on the left) ---
     with col3:
         # --- Main Columns for Layout ---
-        st.header("5. Input Prompt Background")
+        st.header("5. Input prompt background")
         # A text area for the user to enter the image generation prompt.
         prompt_background = st.text_area(
             "Enter your prompt for image generation here:",
             height=150,
-            placeholder="Cartoon-style vertical pipes for a Flappy Bird–like mobile game.Tall cylindrical columns with glossy metallic surface, bright green color, slight highlights and shading for a 3D look. Smooth, simple, iconic design with rounded edges. Clean vector-like style, playful, suitable for 2D mobile game assets. White or transparent background. High resolution, 256x1024 pixels."
-            , key="area 3"
+            value="A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style. Bright colorful sky with a magical gradient (purple, pink, and turquoise). Floating glowing clouds and sparkles in the air. Mystical floating islands and crystal mountains in the distance. Flatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms. Playful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. ",
+            placeholder="A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style. Bright colorful sky with a magical gradient (purple, pink, and turquoise). Floating glowing clouds and sparkles in the air. Mystical floating islands and crystal mountains in the distance. Flatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms. Playful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. ",
+            key="area 3"
         )
 
 
     # --- Generated Image Output Section (on the right) ---
     with col4:
-        st.header("6. Background generated Image ")
+        st.header("6. Background generated image ")
         # --- Button to Trigger Generation ---
         # This is a placeholder for where you would add your generation logic.
         with st.spinner("Generating..."):
@@ -186,4 +198,4 @@ with st.container():
                         else:
                             st.error("Failed to update the workflow. Please check your workflow file.")
         if st.session_state.generated_image_background:
-            st.image(st.session_state.generated_image_background, caption="Generated Background")
+            st.image(st.session_state.generated_image_background, caption="Generated background")
