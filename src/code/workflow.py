@@ -7,7 +7,7 @@ import websocket
 import io
 import random
 from PIL import Image
-from src.code.config import Config
+from code.config import Config
 
 class Workflow:
 
@@ -16,7 +16,7 @@ class Workflow:
         pass
 
     # --- Functions from your code ---
-    def load_workflow(self, filename=Config.WORKFLOW_FILENAME):
+    def load_workflow(self, filename):
         try:
             with open(filename, 'r') as file:
                 return json.load(file)
@@ -30,29 +30,29 @@ class Workflow:
     def encode_image_to_base64(self, image_bytes):
         return base64.b64encode(image_bytes).decode('utf-8')
 
-    def update_workflow_with_image(self, workflow, image_bytes):
+    def update_workflow_with_image(self, workflow, image_bytes, node_number):
         if workflow is None:
             return None
         base64_image = self.encode_image_to_base64(image_bytes)
         # The node ID '10' is hardcoded from your example.
         # It might be different in a user's workflow.
-        if "14" in workflow and "inputs" in workflow["14"]:
-            workflow["14"]["inputs"]["image"] = base64_image
+        if node_number in workflow and "inputs" in workflow[node_number]:
+            workflow[node_number]["inputs"]["image"] = base64_image
             return workflow
         else:
-            st.error("Error: Workflow structure is missing node '20' or 'input'.")
+            st.error("Error: Workflow structure is missing image node or 'input'.")
             return None
     
-    def update_workflow_with_prompt(self, workflow, prompt):
+    def update_workflow_with_prompt(self, workflow, prompt, node_number):
         if workflow is None:
             return None
         # The node ID '10' is hardcoded from your example.
         # It might be different in a user's workflow.
-        if "6" in workflow and "inputs" in workflow["6"]:
-            workflow["6"]["inputs"]["text"] = prompt
+        if node_number in workflow and "inputs" in workflow[node_number]:
+            workflow[node_number]["inputs"]["text"] = prompt
             return workflow
         else:
-            st.error("Error: Workflow structure is missing node '6' or 'inputs'.")
+            st.error("Error: Workflow structure is missing prompt node or 'inputs'.")
             return None
 
     def queue_prompt(self, prompt):
@@ -92,14 +92,14 @@ class Workflow:
             st.error(f"An error occurred while retrieving the image: {e}")
             return None
             
-    def update_workflow_with_rdn_seed(self, workflow):
+    def update_workflow_with_rdn_seed(self, workflow, node_number):
         if workflow is None:
             return None
         random_seed = random.randint(4294967294, 742213406368043)
         # The node ID '3' is hardcoded from your example.
-        if "3" in workflow and "inputs" in workflow["3"]:
-            workflow["3"]["inputs"]["seed"] = random_seed
+        if node_number in workflow and "inputs" in workflow[node_number]:
+            workflow[node_number]["inputs"]["seed"] = random_seed
             return workflow
         else:
-            st.error("Error: Workflow structure is missing node '3' or 'inputs'.")
+            st.error("Error: Workflow structure is missing seed node or 'inputs'.")
             return None
