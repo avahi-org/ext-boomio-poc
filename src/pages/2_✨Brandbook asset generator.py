@@ -17,11 +17,18 @@ def recommendation_pipeline(document_bytes_1):
         return ""
     else:
         try:
-            conversation = [
+            conversation= [
                 {
                     "role": "user",
                     "content": [
-                        {"text": "Base on the brand book information provided, generate a single, compact and detail prompt for image generating background, characters and columns(Obstacles) for a one-tapping game. Plain text only"},
+                        {"text": "Base on the brand book information provided, generate a single, compact and detail prompt for image generating characters, obstacles and background for a one-tapping game. \n"
+                         "**Character prompt:**"
+                        "Create the character using as guide the following prompt: Pixel art a detailed, full-body, character of a cute and cheerful brown cat name Katty. Katty is wearing a vibrant blue retro witch dress and hat. Cute and smiling face. The art style is crisp and clean, with a simple color palette that highlights the character's features. Add running cycle pose on mid air. \n"
+                        "**Obstacles prompt:**"
+                        "Create the obstacles using as guide the following prompt: Vertical obstacles shaped like magical crystal spires for a fantasy mobile game. Tall, jagged crystalline columns glowing in bright colors (blue, purple, pink), semi-transparent with shiny facets. Stylized, clean, playful design with glowing edges and magical aura. Vector-like style, smooth and iconic, suitable for 2D game assets. White or transparent background. High resolution."
+                        "**Background prompt:**"
+                        "Create the background using as guide the following prompt: A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style. Bright colorful sky with a magical gradient (purple, pink, and turquoise). Floating glowing clouds and sparkles in the air. Mystical floating islands and crystal mountains in the distance. Flatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms. Playful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. "
+                        "Provided results as a python list with simple plain text for result"},
                         {
                             "document": {
                                 # Available formats: html, md, pdf, doc/docx, xls/xlsx, csv, and txt
@@ -96,7 +103,8 @@ with st.container():
             # Read the file content as bytes
             bytes_data = uploaded_file.read()
             output_text=recommendation_pipeline(bytes_data)
-            prompt_character = st.text_area("Output Results:", value=output_text, height=200, key="brandbook generator")
+            if output_text:
+                prompt_character=st.text_area("Output Results:", value=output_text, height=200, key="area 1")
 
 
 
@@ -110,7 +118,7 @@ with st.container():
         prompt_character = st.text_area(
             "Enter your prompt for image generation here:",
             height=150,
-            value="Pixel art a detailed, full-body, character of a cute and cheerful brown sloth name sloth. The sloth is wearing a vibrant blue superhero cape and a white headband with red and blue stripes. The art style is crisp and clean, with a simple color palette that highlights the character's features. Add flapping cycle pose on mid air. ",
+            value="Pixel art a detailed, full-body, character of a cute and cheerful brown cat name Katty. Katty is wearing a vibrant blue retro witch dress and hat. Cute and smiling face. The art style is crisp and clean, with a simple color palette that highlights the character's features. Add running cycle pose on mid air. ",
             placeholder="Pixel art a detailed, full-body, character of a cute and cheerful brown sloth name sloth. The sloth is wearing a vibrant blue superhero cape and a white headband with red and blue stripes. The art style is crisp and clean, with a simple color palette that highlights the character's features. Add flapping cycle pose on mid air. "
             , key="area 1"
         )
