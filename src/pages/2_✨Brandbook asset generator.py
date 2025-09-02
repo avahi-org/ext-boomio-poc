@@ -1,6 +1,7 @@
 import streamlit as st
 import io
 import boto3
+import ast
 import json
 import re
 import random
@@ -52,8 +53,22 @@ def recommendation_pipeline(document_bytes_1):
             # Extract and print the response text.
             response_output = response["output"]["message"]["content"][0]["text"]
 
-            parsed_json_output = json.dumps(response_output)
-            return parsed_json_output
+            # Step 1: Remove code fences
+            cleaned = re.sub(r"```.*?```", lambda m: m.group(0)[3:-3], response_output, flags=re.DOTALL)
+            cleaned = cleaned.strip("`")  # extra cleanup
+
+            # Step 2: Extract just the list portion
+            match = re.search(r"\[.*\]", cleaned, flags=re.DOTALL)
+            list_code = match.group(0) if match else "[]"
+
+            # Step 3: Remove Python comments
+            list_code = re.sub(r"#.*", "", list_code)
+
+            # Step 4: Parse safely with ast.literal_eval
+            parsed_list = ast.literal_eval(list_code)
+
+            #parsed_json_output = json.dumps(response_output)
+            return parsed_list
         except Exception as e:
             print(f"Error during KB + Bedrock integration: {str(e)}")
 
