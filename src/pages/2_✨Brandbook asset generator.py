@@ -1,15 +1,58 @@
 import streamlit as st
 import io
+import boto3
+import json
+import re
+import random
+import base64
 from PIL import Image
 from src.code.workflow import Workflow
 from src.code.config import Config
 # --- Configuration ---
-# You need to replace this with your ComfyUI server address
-# The address should not include http:// or ws://
+def recommendation_pipeline(document_bytes_1):
+    # Create a Bedrock Runtime client in the AWS Region you want to use.
+    bedrock_runtime = boto3.client("bedrock-runtime", region_name="eu-central-1")
+    
+    if not document_bytes_1:
+        return ""
+    else:
+        try:
+            conversation = [
+                {
+                    "role": "user",
+                    "content": [
+                        {"text": "Base on the brand book information provided, generate a single, compact and detail prompt for image generating background, characters and columns(Obstacles) for a one-tapping game. Plain text only"},
+                        {
+                            "document": {
+                                # Available formats: html, md, pdf, doc/docx, xls/xlsx, csv, and txt
+                                "format": "pdf",
+                                "name": "asset-related",
+                                "source": {"bytes": document_bytes_1},
+                                        }
+                                        },
+                    ],
+                }
+            ]
+
+
+            # Get Bedrock response
+            response = bedrock_runtime.converse(
+                modelId="us.anthropic.claude-sonnet-4-20250514-v1:0",
+                messages=conversation,
+                inferenceConfig={"maxTokens": 250, "temperature": 0.3},
+            )
+            # Decode the response body.
+            # Extract and print the response text.
+            response_output = response["output"]["message"]["content"][0]["text"]
+
+            parsed_json_output = json.dumps(response_output)
+            return parsed_json_output
+        except Exception as e:
+            print(f"Error during KB + Bedrock integration: {str(e)}")
 
 # --- App Configuration and Title ---
 st.set_page_config(
-    page_title="Boomio game assets generator",
+    page_title="Boomio brandbook game assets generator",
     page_icon="🎨",
     layout="wide"
 )
@@ -17,13 +60,16 @@ spc_1, spc_2, spc_3 = st.columns([2, 2, 2]) # Adjust ratios for desired spacing
 with spc_2:
     st.image("src/boomio_logo.svg", width=800)
 
-st.title("🎨 Boomio game assets generator")
-st.markdown("##### This platform allows you to generate individual game assets (characters, obstacles, backgrounds) based on prompts and pre-processing.")
+st.title("✨ Boomio brandbook game assets generator")
+st.sidebar.header("Assest generator (Bedrock + ComfyUI)")
+st.markdown("##### This platform allows you to: \n" \
+"- Generate individual game assets (characters, obstacles, backgrounds) based on upload brandbook information and pre-processing.")
 st.markdown("##### Guidelines:")
 st.markdown("1. Write a prompt with the specifications for the game asset you want to generate.")
 st.markdown("2. Click the **Generate Image** button to create the asset.")
 st.markdown("3. Repeat the process for each game asset, or create new ones by following the same steps.")
 
+col_aux1, col_aux2 = st.columns([1, 1])
 col1, col2 = st.columns([1, 1])
 col3, col4 = st.columns([1, 1])
 col5, col6 = st.columns([1, 1])
@@ -36,6 +82,21 @@ if 'generated_image_obstacle' not in st.session_state:
 
 if 'generated_image_background' not in st.session_state:
     st.session_state.generated_image_background = []
+
+
+with st.container():
+    with col_aux1:
+        uploaded_file = st.file_uploader('Choose your .pdf file', type="pdf")
+    
+    with col_aux2:
+        # --- Main Columns for Layout ---
+        st.header("Generated prompt by brandbook-bedrock")
+        # A text area for the user to enter the image generation prompt.
+        output_text=recommendation_pipeline(uploaded_file)
+        prompt_character = st.text_area("Output Results:", value=output_text, height=200, key="brandbook generator")
+
+
+
 
 with st.container():
     # --- User Input Section (on the left) ---

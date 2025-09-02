@@ -1,3 +1,5 @@
 streamlit
 websocket-client
 Pillow
+boto3
+awscli
