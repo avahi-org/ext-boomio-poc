@@ -92,8 +92,9 @@ with st.container():
         # --- Main Columns for Layout ---
         st.header("Generated prompt by brandbook-bedrock")
         # A text area for the user to enter the image generation prompt.
-        output_text=recommendation_pipeline(uploaded_file)
-        prompt_character = st.text_area("Output Results:", value=output_text, height=200, key="brandbook generator")
+        if st.button("Generate prompt", key="button 4"):
+            output_text=recommendation_pipeline(uploaded_file)
+            prompt_character = st.text_area("Output Results:", value=output_text, height=200, key="brandbook generator")
 
 
 
