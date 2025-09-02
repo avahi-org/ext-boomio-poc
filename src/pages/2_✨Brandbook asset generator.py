@@ -58,17 +58,17 @@ def recommendation_pipeline(document_bytes_1):
             cleaned = cleaned.strip("`")  # extra cleanup
 
             # Step 2: Extract just the list portion
-            match = re.search(r"\[.*\]", cleaned, flags=re.DOTALL)
-            list_code = match.group(0) if match else "[]"
+            #match = re.search(r"\[.*\]", cleaned, flags=re.DOTALL)
+            #list_code = match.group(0) if match else "[]"
 
             # Step 3: Remove Python comments
-            list_code = re.sub(r"#.*", "", list_code)
+            #list_code = re.sub(r"#.*", "", list_code)
 
             # Step 4: Parse safely with ast.literal_eval
             #parsed_list = ast.literal_eval(list_code)
 
             #parsed_json_output = json.dumps(response_output)
-            return list_code
+            return cleaned
         except Exception as e:
             print(f"Error during KB + Bedrock integration: {str(e)}")
 
