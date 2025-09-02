@@ -74,8 +74,9 @@ def recommendation_pipeline(document_bytes_1):
             # Step 4: Parse safely with ast.literal_eval
             #parsed_list = ast.literal_eval(list_code)
             clean_output = re.sub(r"```json|```", "", response_output).strip()
+            data_dict = ast.literal_eval(clean_output)
             #parsed_json_output = json.dumps(clean_output)
-            return clean_output
+            return data_dict
         except Exception as e:
             print(f"Error during KB + Bedrock integration: {str(e)}")
 
