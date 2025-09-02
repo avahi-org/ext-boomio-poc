@@ -65,10 +65,10 @@ def recommendation_pipeline(document_bytes_1):
             list_code = re.sub(r"#.*", "", list_code)
 
             # Step 4: Parse safely with ast.literal_eval
-            parsed_list = ast.literal_eval(list_code)
+            #parsed_list = ast.literal_eval(list_code)
 
             #parsed_json_output = json.dumps(response_output)
-            return parsed_list
+            return list_code
         except Exception as e:
             print(f"Error during KB + Bedrock integration: {str(e)}")
 
