@@ -74,8 +74,8 @@ def recommendation_pipeline(document_bytes_1):
             # Step 4: Parse safely with ast.literal_eval
             #parsed_list = ast.literal_eval(list_code)
             clean_output = re.sub(r"```json|```", "", response_output).strip()
-            parsed_json_output = json.dumps(clean_output)
-            return parsed_json_output
+            #parsed_json_output = json.dumps(clean_output)
+            return clean_output
         except Exception as e:
             print(f"Error during KB + Bedrock integration: {str(e)}")
 
@@ -126,7 +126,10 @@ with st.container():
             bytes_data = uploaded_file.read()
             output_text=recommendation_pipeline(bytes_data)
             if output_text:
-                prompt_character=st.text_area("Output Results:", value=output_text, height=200, key="area 4")
+                prompt_character=st.text_area("Output Results:", value=output_text, height=200, key="area_4")
+                st.session_state.area_1=output_text["Character prompt"]
+                st.session_state.area_2=output_text["Obstacles prompt"]
+                st.session_state.area_3=output_text["Background prompt"]
 
 
 
@@ -142,7 +145,7 @@ with st.container():
             height=150,
             value="Pixel art a detailed, full-body, character of a cute and cheerful brown cat name Katty. Katty is wearing a vibrant blue retro witch dress and hat. Cute and smiling face. The art style is crisp and clean, with a simple color palette that highlights the character's features. Add running cycle pose on mid air. ",
             placeholder="Pixel art a detailed, full-body, character of a cute and cheerful brown sloth name sloth. The sloth is wearing a vibrant blue superhero cape and a white headband with red and blue stripes. The art style is crisp and clean, with a simple color palette that highlights the character's features. Add flapping cycle pose on mid air. "
-            , key="area 1"
+            , key="area_1"
         )
 
 
@@ -153,7 +156,7 @@ with st.container():
         # This is a placeholder for where you would add your generation logic.
         with st.spinner("Generating..."):
             st.success("Image generation process would start now!")
-        if st.button("Generate Image", key="button 1"):
+        if st.button("Generate Image", key="button_1"):
                 # Load the workflow
                 wrk = Workflow()
                 workflow = wrk.load_workflow(Config.WORKFLOW_CHARACTER)
@@ -197,7 +200,7 @@ with st.container():
             height=150,
             value="Vertical obstacles shaped like magical crystal spires for a fantasy mobile game.Tall, jagged crystalline columns glowing in bright colors (blue, purple, pink), semi-transparent with shiny facets.Stylized, clean, playful design with glowing edges and magical aura.Vector-like style, smooth and iconic, suitable for 2D game assets. White or transparent background. High resolution, 512x1024 pixels.",
             placeholder="Cartoon-style vertical pipes for a Flappy Bird–like mobile game.Tall cylindrical columns with glossy metallic surface, bright green color, slight highlights and shading for a 3D look. Smooth, simple, iconic design with rounded edges. Clean vector-like style, playful, suitable for 2D mobile game assets. White or transparent background. High resolution, 256x1024 pixels."
-            , key="area 2"
+            , key="area_2"
         )
 
 
@@ -208,7 +211,7 @@ with st.container():
         # This is a placeholder for where you would add your generation logic.
         with st.spinner("Generating..."):
             st.success("Image generation process would start now!")
-        if st.button("Generate Image", key="button 2"):
+        if st.button("Generate Image", key="button_2"):
                 # Load the workflow
                 wrk = Workflow()
                 workflow_obstacle = wrk.load_workflow(Config.WORKFLOW_OBSTACLE)
@@ -251,7 +254,7 @@ with st.container():
             height=150,
             value="A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style. Bright colorful sky with a magical gradient (purple, pink, and turquoise). Floating glowing clouds and sparkles in the air. Mystical floating islands and crystal mountains in the distance. Flatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms. Playful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. ",
             placeholder="A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style. Bright colorful sky with a magical gradient (purple, pink, and turquoise). Floating glowing clouds and sparkles in the air. Mystical floating islands and crystal mountains in the distance. Flatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms. Playful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. ",
-            key="area 3"
+            key="area_3"
         )
 
 
@@ -262,7 +265,7 @@ with st.container():
         # This is a placeholder for where you would add your generation logic.
         with st.spinner("Generating..."):
             st.success("Image generation process would start now!")
-        if st.button("Generate Image", key="button 3"):
+        if st.button("Generate Image", key="button_3"):
                 # Load the workflow
                 wrk = Workflow()
                 workflow_background = wrk.load_workflow(Config.WORKFLOW_BACKGROUND)
