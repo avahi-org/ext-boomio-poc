@@ -46,7 +46,7 @@ def recommendation_pipeline(document_bytes_1):
             response = bedrock_runtime.converse(
                 modelId="eu.anthropic.claude-sonnet-4-20250514-v1:0",
                 messages=conversation,
-                inferenceConfig={"maxTokens": 250, "temperature": 0.3},
+                inferenceConfig={"maxTokens": 2048, "temperature": 0.3},
             )
             # Decode the response body.
             # Extract and print the response text.
