@@ -37,7 +37,7 @@ def recommendation_pipeline(document_bytes_1):
 
             # Get Bedrock response
             response = bedrock_runtime.converse(
-                modelId="us.anthropic.claude-sonnet-4-20250514-v1:0",
+                modelId="eu.anthropic.claude-sonnet-4-20250514-v1:0",
                 messages=conversation,
                 inferenceConfig={"maxTokens": 250, "temperature": 0.3},
             )
