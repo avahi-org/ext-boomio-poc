@@ -18,6 +18,11 @@ def recommendation_pipeline(document_bytes_1):
         return ""
     else:
         try:
+            json_schema={
+                "Character prompt" : "(JSON string)",
+                "Obstacles prompt:" : "(JSON string)",
+                "Background prompt:" : "(JSON string)"
+            }
             conversation= [
                 {
                     "role": "user",
@@ -29,7 +34,9 @@ def recommendation_pipeline(document_bytes_1):
                         "Create the obstacles using as guide the following prompt: Vertical obstacles shaped like magical crystal spires for a fantasy mobile game. Tall, jagged crystalline columns glowing in bright colors (blue, purple, pink), semi-transparent with shiny facets. Stylized, clean, playful design with glowing edges and magical aura. Vector-like style, smooth and iconic, suitable for 2D game assets. White or transparent background. High resolution."
                         "**Background prompt:**"
                         "Create the background using as guide the following prompt: A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style. Bright colorful sky with a magical gradient (purple, pink, and turquoise). Floating glowing clouds and sparkles in the air. Mystical floating islands and crystal mountains in the distance. Flatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms. Playful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. "
-                        "Provided results as a python list with any aditional details, just the python list"},
+                        "Provided results as a json with any aditional details, just the json format output \n"
+                        "Provide results with the follow schema:"
+                        f"{json_schema}"},
                         {
                             "document": {
                                 # Available formats: html, md, pdf, doc/docx, xls/xlsx, csv, and txt
@@ -54,8 +61,8 @@ def recommendation_pipeline(document_bytes_1):
             response_output = response["output"]["message"]["content"][0]["text"]
 
             # Step 1: Remove code fences
-            cleaned = re.sub(r"```.*?```", lambda m: m.group(0)[3:-3], response_output, flags=re.DOTALL)
-            cleaned = cleaned.strip("`")  # extra cleanup
+            #cleaned = re.sub(r"```.*?```", lambda m: m.group(0)[3:-3], response_output, flags=re.DOTALL)
+            #cleaned = cleaned.strip("`")  # extra cleanup
 
             # Step 2: Extract just the list portion
             #match = re.search(r"\[.*\]", cleaned, flags=re.DOTALL)
@@ -66,9 +73,9 @@ def recommendation_pipeline(document_bytes_1):
 
             # Step 4: Parse safely with ast.literal_eval
             #parsed_list = ast.literal_eval(list_code)
-
-            #parsed_json_output = json.dumps(response_output)
-            return cleaned
+            clean_output = re.sub(r"```json|```", "", response_output).strip()
+            parsed_json_output = json.dumps(clean_output)
+            return parsed_json_output
         except Exception as e:
             print(f"Error during KB + Bedrock integration: {str(e)}")
 
