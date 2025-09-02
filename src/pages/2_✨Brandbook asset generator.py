@@ -28,7 +28,7 @@ def recommendation_pipeline(document_bytes_1):
                         "Create the obstacles using as guide the following prompt: Vertical obstacles shaped like magical crystal spires for a fantasy mobile game. Tall, jagged crystalline columns glowing in bright colors (blue, purple, pink), semi-transparent with shiny facets. Stylized, clean, playful design with glowing edges and magical aura. Vector-like style, smooth and iconic, suitable for 2D game assets. White or transparent background. High resolution."
                         "**Background prompt:**"
                         "Create the background using as guide the following prompt: A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style. Bright colorful sky with a magical gradient (purple, pink, and turquoise). Floating glowing clouds and sparkles in the air. Mystical floating islands and crystal mountains in the distance. Flatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms. Playful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. "
-                        "Provided results as a python list with simple plain text for result"},
+                        "Provided results as a python list with any aditional details, just the python list"},
                         {
                             "document": {
                                 # Available formats: html, md, pdf, doc/docx, xls/xlsx, csv, and txt
@@ -104,7 +104,7 @@ with st.container():
             bytes_data = uploaded_file.read()
             output_text=recommendation_pipeline(bytes_data)
             if output_text:
-                prompt_character=st.text_area("Output Results:", value=output_text, height=200, key="area 1")
+                prompt_character=st.text_area("Output Results:", value=output_text, height=200, key="area 4")
 
 
 
