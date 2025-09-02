@@ -86,14 +86,16 @@ if 'generated_image_background' not in st.session_state:
 
 with st.container():
     with col_aux1:
-        uploaded_file = st.file_uploader('Choose your .pdf file', type="pdf")
+        uploaded_file = st.file_uploader('Choose your .pdf file', type="pdf", key="pdf file")
     
     with col_aux2:
         # --- Main Columns for Layout ---
         st.header("Generated prompt by brandbook-bedrock")
         # A text area for the user to enter the image generation prompt.
         if st.button("Generate prompt", key="button 4"):
-            output_text=recommendation_pipeline(uploaded_file)
+            # Read the file content as bytes
+            bytes_data = uploaded_file.read()
+            output_text=recommendation_pipeline(bytes_data)
             prompt_character = st.text_area("Output Results:", value=output_text, height=200, key="brandbook generator")
 
 
