@@ -1,26 +1,61 @@
 {
   "1": {
     "inputs": {
-      "seed": 834766672967577,
-      "steps": 40,
-      "cfg": 4.5,
+      "unet_name": "flux1-dev-kontext_fp8_scaled.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Load Diffusion Model"
+    }
+  },
+  "3": {
+    "inputs": {
+      "clip_name1": "clip_l.safetensors",
+      "clip_name2": "t5xxl_fp16.safetensors",
+      "type": "flux",
+      "device": "default"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "DualCLIPLoader"
+    }
+  },
+  "4": {
+    "inputs": {
+      "text": "A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style.\nBright colorful sky with a magical gradient (purple, pink, and turquoise).  \nFloating glowing clouds and sparkles in the air.  \nMystical floating islands and crystal mountains in the distance.  \nFlatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms.  \nPlayful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. ",
+      "clip": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "5": {
+    "inputs": {
+      "seed": 835861109133093,
+      "steps": 20,
+      "cfg": 1,
       "sampler_name": "euler",
       "scheduler": "simple",
       "denoise": 1,
       "model": [
-        "2",
+        "1",
         0
       ],
       "positive": [
-        "12",
+        "4",
         0
       ],
       "negative": [
-        "3",
+        "6",
         0
       ],
       "latent_image": [
-        "11",
+        "7",
         0
       ]
     },
@@ -29,70 +64,19 @@
       "title": "KSampler"
     }
   },
-  "2": {
+  "6": {
     "inputs": {
-      "ckpt_name": "flux1-dev-fp8.safetensors"
-    },
-    "class_type": "CheckpointLoaderSimple",
-    "_meta": {
-      "title": "Load Checkpoint"
-    }
-  },
-  "3": {
-    "inputs": {
-      "text": "text, watermark, logo, blur, noise, messy composition",
-      "clip": [
-        "2",
-        1
-      ]
-    },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP Text Encode (Prompt)"
-    }
-  },
-  "4": {
-    "inputs": {
-      "samples": [
-        "1",
-        0
-      ],
-      "vae": [
-        "2",
-        2
-      ]
-    },
-    "class_type": "VAEDecode",
-    "_meta": {
-      "title": "VAE Decode"
-    }
-  },
-  "5": {
-    "inputs": {
-      "images": [
+      "conditioning": [
         "4",
         0
       ]
     },
-    "class_type": "PreviewImage",
+    "class_type": "ConditioningZeroOut",
     "_meta": {
-      "title": "Preview Image"
+      "title": "ConditioningZeroOut"
     }
   },
-  "8": {
-    "inputs": {
-      "format": "PNG",
-      "images": [
-        "4",
-        0
-      ]
-    },
-    "class_type": "ETN_SendImageWebSocket",
-    "_meta": {
-      "title": "Send Image (WebSocket)"
-    }
-  },
-  "11": {
+  "7": {
     "inputs": {
       "width": 1680,
       "height": 672,
@@ -103,17 +87,54 @@
       "title": "Empty Latent Image"
     }
   },
-  "12": {
+  "8": {
     "inputs": {
-      "text": "A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style.\nBright colorful sky with a magical gradient (purple, pink, and turquoise).  \nFloating glowing clouds and sparkles in the air.  \nMystical floating islands and crystal mountains in the distance.  \nFlatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms.  \nPlayful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. ",
-      "clip": [
-        "2",
-        1
+      "samples": [
+        "5",
+        0
+      ],
+      "vae": [
+        "9",
+        0
       ]
     },
-    "class_type": "CLIPTextEncode",
+    "class_type": "VAEDecode",
     "_meta": {
-      "title": "CLIP Text Encode (Prompt)"
+      "title": "VAE Decode"
+    }
+  },
+  "9": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "10": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "11": {
+    "inputs": {
+      "format": "PNG",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "ETN_SendImageWebSocket",
+    "_meta": {
+      "title": "Send Image (WebSocket)"
     }
   }
 }
