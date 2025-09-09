@@ -23,7 +23,7 @@
   },
   "4": {
     "inputs": {
-      "text": "A 2D rendered game scene, 16-bit retro pixel art, retro video game, flappy bird-like style.\nBright colorful sky with a magical gradient (purple, pink, and turquoise).  \nFloating glowing clouds and sparkles in the air.  \nMystical floating islands and crystal mountains in the distance.  \nFlatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms.  \nPlayful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. ",
+      "text": "A 2D rendered game background, high quality pixel art flappy bird-like style.\nBright colorful sky with a magical gradient (purple, pink, and turquoise).  \nFloating glowing clouds and sparkles in the air.  \nMystical floating islands on the distance.  \nFlatten, runnable ground area made of enchanted grass with glowing flowers and mushrooms.  \nPlayful, vibrant, whimsical style with smooth vector-like shading, clean and iconic, suitable for 2D mobile game assets. ",
       "clip": [
         "3",
         0
@@ -36,9 +36,9 @@
   },
   "5": {
     "inputs": {
-      "seed": 835861109133093,
-      "steps": 20,
-      "cfg": 1,
+      "seed": 286136208384059,
+      "steps": 30,
+      "cfg": 2,
       "sampler_name": "euler",
       "scheduler": "simple",
       "denoise": 1,
@@ -47,7 +47,7 @@
         0
       ],
       "positive": [
-        "4",
+        "12",
         0
       ],
       "negative": [
@@ -78,7 +78,7 @@
   },
   "7": {
     "inputs": {
-      "width": 1680,
+      "width": 1504,
       "height": 672,
       "batch_size": 1
     },
@@ -135,6 +135,19 @@
     "class_type": "ETN_SendImageWebSocket",
     "_meta": {
       "title": "Send Image (WebSocket)"
+    }
+  },
+  "12": {
+    "inputs": {
+      "guidance": 2.5,
+      "conditioning": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "FluxGuidance",
+    "_meta": {
+      "title": "FluxGuidance"
     }
   }
 }
