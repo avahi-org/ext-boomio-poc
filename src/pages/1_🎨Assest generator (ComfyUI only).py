@@ -31,6 +31,7 @@ col1, col2 = st.columns([1, 1])
 col3, col4 = st.columns([1, 1])
 col5, col6 = st.columns([1, 1])
 col_bkg_1, col_bkg_2, col_bkg_3, col_bkg_4, col_bkg_5= st.columns([2, 2, 2, 2, 2])
+col_bkg_shift_1, col_bkg_shift_2, col_bkg_shift_3, col_bkg_shift_4, col_bkg_shift_5= st.columns([2, 2, 2, 2, 2])
 
 if 'generated_image_character' not in st.session_state:
     st.session_state.generated_image_character = []
@@ -267,5 +268,23 @@ with st.container():
     with col_bkg_5:
         if st.session_state.bkg_img_4:
             st.image(st.session_state.bkg_img_4, caption="Bkg 4")
+
+with st.container():
+
+    with col_bkg_shift_1:
+        st.header("Split background image")
+
+    with col_bkg_shift_1:
+        if st.session_state.bkg_img_3:
+            st.image(st.session_state.bkg_img_3, caption="Bkg 1")
+    with col_bkg_shift_1:
+        if st.session_state.bkg_img_4:
+            st.image(st.session_state.bkg_img_4, caption="Bkg 2")
+    with col_bkg_shift_1:
+        if st.session_state.bkg_img_1:
+            st.image(st.session_state.bkg_img_1, caption="Bkg 3")
+    with col_bkg_shift_1:
+        if st.session_state.bkg_img_2:
+            st.image(st.session_state.bkg_img_2, caption="Bkg 4")
 
 
