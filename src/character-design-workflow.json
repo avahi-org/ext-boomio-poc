@@ -36,7 +36,7 @@
   },
   "7": {
     "inputs": {
-      "seed": 363518208178325,
+      "seed": 932623889956306,
       "steps": 40,
       "cfg": 5,
       "sampler_name": "euler",
@@ -196,7 +196,7 @@
   },
   "47": {
     "inputs": {
-      "seed": 608723133899800,
+      "seed": 973939295845919,
       "steps": 20,
       "cfg": 2,
       "sampler_name": "euler",
@@ -296,7 +296,7 @@
     "inputs": {
       "format": "PNG",
       "images": [
-        "63",
+        "66",
         0
       ]
     },
@@ -369,36 +369,34 @@
       "title": "Inspyrenet Rembg Advanced"
     }
   },
-  "63": {
-    "inputs": {
-      "width": 200,
-      "height": 100,
-      "upscale_method": "nearest-exact",
-      "keep_proportion": "stretch",
-      "pad_color": "0, 0, 0",
-      "crop_position": "center",
-      "divisible_by": 2,
-      "device": "cpu",
-      "image": [
-        "55",
-        0
-      ]
-    },
-    "class_type": "ImageResizeKJv2",
-    "_meta": {
-      "title": "Resize Image v2"
-    }
-  },
   "64": {
     "inputs": {
       "images": [
-        "63",
+        "66",
         0
       ]
     },
     "class_type": "PreviewImage",
     "_meta": {
       "title": "Preview Image"
+    }
+  },
+  "66": {
+    "inputs": {
+      "mode": "resize",
+      "supersample": "true",
+      "resampling": "lanczos",
+      "rescale_factor": 1,
+      "resize_width": 200,
+      "resize_height": 100,
+      "image": [
+        "55",
+        0
+      ]
+    },
+    "class_type": "Image Resize",
+    "_meta": {
+      "title": "Image Resize"
     }
   }
 }
