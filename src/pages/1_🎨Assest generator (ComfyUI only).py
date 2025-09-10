@@ -140,8 +140,8 @@ with st.container():
         prompt_obstacles = st.text_area(
             "Enter your prompt for image generation here:",
             height=150,
-            value="Vertical obstacles shaped like magical crystal spires for a fantasy mobile game.Tall, jagged crystalline columns glowing in bright colors (blue, purple, pink), semi-transparent with shiny facets.Stylized, clean, playful design with glowing edges and magical aura.Vector-like style, smooth and iconic, suitable for 2D game assets. White or transparent background. High resolution, 512x1024 pixels.",
-            placeholder="Cartoon-style vertical pipes for a Flappy Bird–like mobile game.Tall cylindrical columns with glossy metallic surface, bright green color, slight highlights and shading for a 3D look. Smooth, simple, iconic design with rounded edges. Clean vector-like style, playful, suitable for 2D mobile game assets. White or transparent background. High resolution, 256x1024 pixels."
+            value="A single pixel art jungle tree obstacle for a side-scrolling endless runner, isolated sprite, tall and narrow. transparent background",
+            placeholder="A single pixel art jungle tree obstacle for a side-scrolling endless runner, isolated sprite, tall and narrow. transparent background"
             , key="area 2"
         )
 

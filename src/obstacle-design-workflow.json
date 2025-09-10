@@ -1,7 +1,7 @@
 {
   "1": {
     "inputs": {
-      "text": "blurry, low resolution, bad art, painting, photograph, distorted, human, person, landscape, sky, bird, logo, text, flat color, no texture",
+      "text": "ugly, watermark",
       "clip": [
         "4",
         1
@@ -14,8 +14,8 @@
   },
   "2": {
     "inputs": {
-      "seed": 203705106287823,
-      "steps": 40,
+      "seed": 514259751761339,
+      "steps": 30,
       "cfg": 5,
       "sampler_name": "euler",
       "scheduler": "simple",
@@ -44,7 +44,7 @@
   },
   "3": {
     "inputs": {
-      "text": "Cartoon-style vertical pipes for a Flappy Bird–like mobile game.  \nTall cylindrical columns with glossy metallic surface, bright green color, slight highlights and shading for a 3D look.  \nSmooth, simple, iconic design with rounded edges.  \nClean vector-like style, playful, suitable for 2D mobile game assets.  \nWhite or transparent background.  \nHigh resolution, 256x1024 pixels.",
+      "text": "a single pixel art jungle tree obstacle for a side-scrolling endless runner, isolated sprite, tall and narrow. transparent background",
       "clip": [
         "4",
         1
@@ -57,7 +57,7 @@
   },
   "4": {
     "inputs": {
-      "ckpt_name": "flux1-dev-fp8.safetensors"
+      "ckpt_name": "Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors"
     },
     "class_type": "CheckpointLoaderSimple",
     "_meta": {
@@ -66,8 +66,8 @@
   },
   "5": {
     "inputs": {
-      "width": 256,
-      "height": 1024,
+      "width": 512,
+      "height": 2048,
       "batch_size": 2
     },
     "class_type": "EmptyLatentImage",
@@ -103,29 +103,16 @@
       "title": "Preview Image"
     }
   },
-  "8": {
-    "inputs": {
-      "torchscript_jit": "default",
-      "image": [
-        "6",
-        0
-      ]
-    },
-    "class_type": "InspyrenetRembg",
-    "_meta": {
-      "title": "Inspyrenet Rembg"
-    }
-  },
   "9": {
     "inputs": {
       "mode": "resize",
       "supersample": "true",
       "resampling": "lanczos",
       "rescale_factor": 1,
-      "resize_width": 80,
-      "resize_height": 570,
+      "resize_width": 83,
+      "resize_height": 572,
       "image": [
-        "8",
+        "13",
         0
       ]
     },
@@ -170,6 +157,20 @@
     "class_type": "PreviewImage",
     "_meta": {
       "title": "Preview Image"
+    }
+  },
+  "13": {
+    "inputs": {
+      "threshold": 0.55,
+      "torchscript_jit": "default",
+      "image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "InspyrenetRembgAdvanced",
+    "_meta": {
+      "title": "Inspyrenet Rembg Advanced"
     }
   }
 }
