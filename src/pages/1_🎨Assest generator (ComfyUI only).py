@@ -283,7 +283,7 @@ with st.container():
     with col_bkg_shift_4:
         if st.session_state.bkg_img_1:
             st.image(st.session_state.bkg_img_1, caption="Shift Bkg 1")
-    with col_bkg_shift_4:
+    with col_bkg_shift_5:
         if st.session_state.bkg_img_2:
             st.image(st.session_state.bkg_img_2, caption="Shift Bkg 2")
 
