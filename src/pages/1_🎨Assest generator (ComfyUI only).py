@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import io
 from PIL import Image
 from src.code.workflow import Workflow
 from src.code.config import Config
@@ -242,8 +243,15 @@ with st.container():
     with col_bkg_1:
         st.header("Split background image")
         if st.button("Splitting background", key="button 4"):
-
-            split_image_into_tiles(st.session_state.generated_image_background, "output_tiles", 1, 4)
+            # Assuming 'image_path.png' is your image file
+            # Create a BytesIO object from the image bytes
+            image_stream = io.BytesIO(st.session_state.generated_image_background)
+            # Open the image using Pillow
+            image = Image.open(image_stream)
+            # Save the image to a file
+            output_path = "output_background.png"
+            image.save(output_path)
+            split_image_into_tiles(output_path, "output_tiles", 1, 4)
             st.session_state.bkg_img_1="output_tiles/tile_r0_c0.jpg"
             st.session_state.bkg_img_2="output_tiles/tile_r0_c1.jpg"
             st.session_state.bkg_img_3="output_tiles/tile_r0_c2.jpg"
