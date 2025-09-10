@@ -10,7 +10,7 @@
   },
   "5": {
     "inputs": {
-      "text": "Pixel art a detailed, full-body, character of a cute and cheerful brown sloth name sloth. The sloth is wearing a vibrant blue superhero cape and a white headband with red and blue stripes. The art style is crisp and clean, with a simple color palette that highlights the character's features. Add flapping cycle pose on mid air. ",
+      "text": "Pixel art a detailed, full-body, character of a cute and cheerful brown cat name Katty. Katty is wearing a vibrant blue retro witch dress and hat. Cute and smiling face. The art style is crisp and clean, with a simple color palette that highlights the character's features. Add running cycle pose on mid air. gray solid background.",
       "clip": [
         "4",
         1
@@ -23,7 +23,7 @@
   },
   "6": {
     "inputs": {
-      "text": "blurry, realistic, extra limbs, malformed face, deformed proportions, text, watermark, shadows, background, messy outlines, low quality",
+      "text": "blurry, extra limbs, malformed face, deformed proportions, text, watermark, shadows, background, messy outlines, low quality",
       "clip": [
         "4",
         1
@@ -36,7 +36,7 @@
   },
   "7": {
     "inputs": {
-      "seed": 693084664581678,
+      "seed": 363518208178325,
       "steps": 40,
       "cfg": 5,
       "sampler_name": "euler",
@@ -84,50 +84,11 @@
     "inputs": {
       "width": 512,
       "height": 512,
-      "batch_size": 2
+      "batch_size": 1
     },
     "class_type": "EmptyLatentImage",
     "_meta": {
       "title": "Empty Latent Image"
-    }
-  },
-  "19": {
-    "inputs": {
-      "torchscript_jit": "default",
-      "image": [
-        "9",
-        0
-      ]
-    },
-    "class_type": "InspyrenetRembg",
-    "_meta": {
-      "title": "Inspyrenet Rembg"
-    }
-  },
-  "20": {
-    "inputs": {
-      "mode": "horizontal",
-      "images": [
-        "19",
-        0
-      ]
-    },
-    "class_type": "Image Flip",
-    "_meta": {
-      "title": "Image Flip"
-    }
-  },
-  "22": {
-    "inputs": {
-      "format": "PNG",
-      "images": [
-        "33",
-        0
-      ]
-    },
-    "class_type": "ETN_SendImageWebSocket",
-    "_meta": {
-      "title": "Send Image (WebSocket)"
     }
   },
   "25": {
@@ -142,22 +103,10 @@
       "title": "Preview Image"
     }
   },
-  "26": {
-    "inputs": {
-      "images": [
-        "20",
-        0
-      ]
-    },
-    "class_type": "PreviewImage",
-    "_meta": {
-      "title": "Preview Image"
-    }
-  },
   "27": {
     "inputs": {
       "images": [
-        "28",
+        "61",
         0
       ]
     },
@@ -166,41 +115,284 @@
       "title": "Preview Image"
     }
   },
-  "28": {
+  "35": {
     "inputs": {
-      "mode": "resize",
-      "supersample": "true",
-      "resampling": "lanczos",
-      "rescale_factor": 1,
-      "resize_width": 100,
-      "resize_height": 100,
+      "conditioning": [
+        "48",
+        0
+      ],
+      "latent": [
+        "50",
+        0
+      ]
+    },
+    "class_type": "ReferenceLatent",
+    "_meta": {
+      "title": "ReferenceLatent"
+    }
+  },
+  "37": {
+    "inputs": {
+      "conditioning": [
+        "48",
+        0
+      ]
+    },
+    "class_type": "ConditioningZeroOut",
+    "_meta": {
+      "title": "ConditioningZeroOut"
+    }
+  },
+  "38": {
+    "inputs": {
+      "unet_name": "flux1-dev-kontext_fp8_scaled.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Load Diffusion Model"
+    }
+  },
+  "44": {
+    "inputs": {
+      "samples": [
+        "47",
+        0
+      ],
+      "vae": [
+        "49",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "45": {
+    "inputs": {
+      "clip_name1": "clip_l.safetensors",
+      "clip_name2": "t5xxl_fp16.safetensors",
+      "type": "flux",
+      "device": "default"
+    },
+    "class_type": "DualCLIPLoader",
+    "_meta": {
+      "title": "DualCLIPLoader"
+    }
+  },
+  "46": {
+    "inputs": {
+      "guidance": 2.5,
+      "conditioning": [
+        "35",
+        0
+      ]
+    },
+    "class_type": "FluxGuidance",
+    "_meta": {
+      "title": "FluxGuidance"
+    }
+  },
+  "47": {
+    "inputs": {
+      "seed": 608723133899800,
+      "steps": 20,
+      "cfg": 2,
+      "sampler_name": "euler",
+      "scheduler": "simple",
+      "denoise": 1,
+      "model": [
+        "38",
+        0
+      ],
+      "positive": [
+        "46",
+        0
+      ],
+      "negative": [
+        "37",
+        0
+      ],
+      "latent_image": [
+        "50",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "48": {
+    "inputs": {
+      "text": "character single foot stability phase, arms at waist",
+      "clip": [
+        "45",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "49": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "50": {
+    "inputs": {
+      "pixels": [
+        "52",
+        0
+      ],
+      "vae": [
+        "49",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE Encode"
+    }
+  },
+  "52": {
+    "inputs": {
       "image": [
-        "20",
+        "9",
         0
       ]
     },
-    "class_type": "Image Resize",
+    "class_type": "FluxKontextImageScale",
     "_meta": {
-      "title": "Image Resize"
+      "title": "FluxKontextImageScale"
     }
   },
-  "33": {
+  "55": {
     "inputs": {
-      "mode": "horizontal",
-      "images": [
-        "28",
+      "direction": "right",
+      "match_image_size": true,
+      "image1": [
+        "61",
+        0
+      ],
+      "image2": [
+        "62",
         0
       ]
     },
-    "class_type": "easy joinImageBatch",
+    "class_type": "ImageConcanate",
     "_meta": {
-      "title": "JoinImageBatch"
+      "title": "Image Concatenate"
     }
   },
-  "34": {
+  "56": {
+    "inputs": {
+      "format": "PNG",
+      "images": [
+        "63",
+        0
+      ]
+    },
+    "class_type": "ETN_SendImageWebSocket",
+    "_meta": {
+      "title": "Send Image (WebSocket)"
+    }
+  },
+  "57": {
     "inputs": {
       "images": [
-        "33",
+        "55",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "58": {
+    "inputs": {
+      "images": [
+        "44",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "59": {
+    "inputs": {
+      "images": [
+        "52",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  },
+  "61": {
+    "inputs": {
+      "threshold": 0.55,
+      "torchscript_jit": "on",
+      "image": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "InspyrenetRembgAdvanced",
+    "_meta": {
+      "title": "Inspyrenet Rembg Advanced"
+    }
+  },
+  "62": {
+    "inputs": {
+      "threshold": 0.6,
+      "torchscript_jit": "on",
+      "image": [
+        "44",
+        0
+      ]
+    },
+    "class_type": "InspyrenetRembgAdvanced",
+    "_meta": {
+      "title": "Inspyrenet Rembg Advanced"
+    }
+  },
+  "63": {
+    "inputs": {
+      "width": 200,
+      "height": 100,
+      "upscale_method": "nearest-exact",
+      "keep_proportion": "stretch",
+      "pad_color": "0, 0, 0",
+      "crop_position": "center",
+      "divisible_by": 2,
+      "device": "cpu",
+      "image": [
+        "55",
+        0
+      ]
+    },
+    "class_type": "ImageResizeKJv2",
+    "_meta": {
+      "title": "Resize Image v2"
+    }
+  },
+  "64": {
+    "inputs": {
+      "images": [
+        "63",
         0
       ]
     },
