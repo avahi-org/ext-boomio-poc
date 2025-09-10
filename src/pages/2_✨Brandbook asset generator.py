@@ -9,15 +9,19 @@ import base64
 from PIL import Image
 from src.code.workflow import Workflow
 from src.code.config import Config
+import logging
+
+logger = logging.getLogger(__name__)
 # --- Configuration ---
 def recommendation_pipeline(document_bytes_1):
     # Create a Bedrock Runtime client in the AWS Region you want to use.
-    bedrock_runtime = boto3.client("bedrock-runtime", region_name="eu-central-1")
     
     if not document_bytes_1:
         return ""
     else:
         try:
+            logger.info("Initiate bedrock client")
+            bedrock_runtime = boto3.client("bedrock-runtime", region_name="eu-central-1")
             json_schema={
                 "Character prompt" : "(JSON string)",
                 "Obstacles prompt:" : "(JSON string)",
@@ -51,6 +55,7 @@ def recommendation_pipeline(document_bytes_1):
 
 
             # Get Bedrock response
+            logger.info("Initiate bedrock response")
             response = bedrock_runtime.converse(
                 modelId="eu.anthropic.claude-sonnet-4-20250514-v1:0",
                 messages=conversation,
@@ -58,27 +63,15 @@ def recommendation_pipeline(document_bytes_1):
             )
             # Decode the response body.
             # Extract and print the response text.
+            logger.info("Cleaning bedrock response")
             response_output = response["output"]["message"]["content"][0]["text"]
 
-            # Step 1: Remove code fences
-            #cleaned = re.sub(r"```.*?```", lambda m: m.group(0)[3:-3], response_output, flags=re.DOTALL)
-            #cleaned = cleaned.strip("`")  # extra cleanup
-
-            # Step 2: Extract just the list portion
-            #match = re.search(r"\[.*\]", cleaned, flags=re.DOTALL)
-            #list_code = match.group(0) if match else "[]"
-
-            # Step 3: Remove Python comments
-            #list_code = re.sub(r"#.*", "", list_code)
-
-            # Step 4: Parse safely with ast.literal_eval
-            #parsed_list = ast.literal_eval(list_code)
             clean_output = re.sub(r"```json|```", "", response_output).strip()
             data_dict = ast.literal_eval(clean_output)
             #parsed_json_output = json.dumps(clean_output)
             return data_dict
         except Exception as e:
-            print(f"Error during KB + Bedrock integration: {str(e)}")
+            logger.error(f"Error during KB + Bedrock integration: {str(e)}")
 
 # --- App Configuration and Title ---
 st.set_page_config(
@@ -124,13 +117,15 @@ with st.container():
         # A text area for the user to enter the image generation prompt.
         if st.button("Generate prompt", key="button 4"):
             # Read the file content as bytes
-            bytes_data = uploaded_file.read()
-            output_text=recommendation_pipeline(bytes_data)
-            if output_text:
-                prompt_character=st.text_area("Output Results:", value=output_text, height=200, key="area_4")
-                st.session_state.area_1=output_text["Character prompt"]
-                st.session_state.area_2=output_text["Obstacles prompt"]
-                st.session_state.area_3=output_text["Background prompt"]
+            with st.spinner("Processing..."):
+                bytes_data = uploaded_file.read()
+                output_text=recommendation_pipeline(bytes_data)
+                if output_text:
+                    prompt_character=st.text_area("Output Results:", value=output_text, height=200, key="area_4")
+                    st.session_state.area_1=output_text["Character prompt"]
+                    st.session_state.area_2=output_text["Obstacles prompt"]
+                    st.session_state.area_3=output_text["Background prompt"]
+            
 
 
 
