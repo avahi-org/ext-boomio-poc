@@ -272,19 +272,19 @@ with st.container():
 with st.container():
 
     with col_bkg_shift_1:
-        st.header("Split background image")
+        st.header("Moving background image")
 
-    with col_bkg_shift_1:
+    with col_bkg_shift_2:
         if st.session_state.bkg_img_3:
-            st.image(st.session_state.bkg_img_3, caption="Bkg 1")
-    with col_bkg_shift_1:
+            st.image(st.session_state.bkg_img_3, caption="Shift Bkg 3")
+    with col_bkg_shift_3:
         if st.session_state.bkg_img_4:
-            st.image(st.session_state.bkg_img_4, caption="Bkg 2")
-    with col_bkg_shift_1:
+            st.image(st.session_state.bkg_img_4, caption="Shift Bkg 4")
+    with col_bkg_shift_4:
         if st.session_state.bkg_img_1:
-            st.image(st.session_state.bkg_img_1, caption="Bkg 3")
-    with col_bkg_shift_1:
+            st.image(st.session_state.bkg_img_1, caption="Shift Bkg 1")
+    with col_bkg_shift_4:
         if st.session_state.bkg_img_2:
-            st.image(st.session_state.bkg_img_2, caption="Bkg 4")
+            st.image(st.session_state.bkg_img_2, caption="Shift Bkg 2")
 
 
