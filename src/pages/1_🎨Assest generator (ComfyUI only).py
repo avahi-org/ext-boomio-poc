@@ -242,7 +242,8 @@ with st.container():
     with col_bkg_1:
         st.header("Split background image")
         if st.button("Splitting background", key="button 4"):
-            split_image_into_tiles("test image.jpg", "output_tiles", 1, 4)
+
+            split_image_into_tiles(st.session_state.generated_image_background, "output_tiles", 1, 4)
             st.session_state.bkg_img_1="output_tiles/tile_r0_c0.jpg"
             st.session_state.bkg_img_2="output_tiles/tile_r0_c1.jpg"
             st.session_state.bkg_img_3="output_tiles/tile_r0_c2.jpg"
