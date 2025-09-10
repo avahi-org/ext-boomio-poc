@@ -1,5 +1,5 @@
 import streamlit as st
-import io
+import os
 from PIL import Image
 from src.code.workflow import Workflow
 from src.code.config import Config
@@ -29,6 +29,7 @@ st.markdown("3. Repeat the process for each game asset, or create new ones by fo
 col1, col2 = st.columns([1, 1])
 col3, col4 = st.columns([1, 1])
 col5, col6 = st.columns([1, 1])
+col_bkg_1, col_bkg_2, col_bkg_3, col_bkg_4, col_bkg_5= st.columns([2, 2, 2, 2, 2])
 
 if 'generated_image_character' not in st.session_state:
     st.session_state.generated_image_character = []
@@ -38,6 +39,40 @@ if 'generated_image_obstacle' not in st.session_state:
 
 if 'generated_image_background' not in st.session_state:
     st.session_state.generated_image_background = []
+
+if 'bkg_img_1' not in st.session_state:
+    st.session_state.bkg_img_1 = []
+if 'bkg_img_2' not in st.session_state:
+    st.session_state.bkg_img_2 = []
+if 'bkg_img_3' not in st.session_state:
+    st.session_state.bkg_img_3 = []
+if 'bkg_img_4' not in st.session_state:
+    st.session_state.bkg_img_4 = []
+
+
+def split_image_into_tiles(image_path, output_dir, rows, cols):
+    img = Image.open(image_path)
+    img_width, img_height = img.size
+    tile_width = img_width // cols
+    tile_height = img_height // rows
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for r in range(rows):
+        for c in range(cols):
+            left = c * tile_width
+            upper = r * tile_height
+            right = left + tile_width
+            lower = upper + tile_height
+
+            # Crop the tile
+            tile = img.crop((left, upper, right, lower))
+
+            # Save the tile
+            tile_name = f"tile_r{r}_c{c}.jpg"
+            tile.save(os.path.join(output_dir, tile_name))
+
 
 with st.container():
     # --- User Input Section (on the left) ---
@@ -201,3 +236,28 @@ with st.container():
                             st.error("Failed to update the workflow. Please check your workflow file.")
         if st.session_state.generated_image_background:
             st.image(st.session_state.generated_image_background, caption="Generated background")
+
+with st.container():
+
+    with col_bkg_1:
+        st.header("Split background image")
+        if st.button("Splitting background", key="button 4"):
+            split_image_into_tiles("test image.jpg", "output_tiles", 1, 4)
+            st.session_state.bkg_img_1="output_tiles/tile_r0_c0.jpg"
+            st.session_state.bkg_img_2="output_tiles/tile_r0_c1.jpg"
+            st.session_state.bkg_img_3="output_tiles/tile_r0_c2.jpg"
+            st.session_state.bkg_img_4="output_tiles/tile_r0_c3.jpg"
+    with col_bkg_2:
+        if st.session_state.bkg_img_1:
+            st.image(st.session_state.bkg_img_1, caption="Bkg 1")
+    with col_bkg_3:
+        if st.session_state.bkg_img_2:
+            st.image(st.session_state.bkg_img_2, caption="Bkg 2")
+    with col_bkg_4:
+        if st.session_state.bkg_img_3:
+            st.image(st.session_state.bkg_img_3, caption="Bkg 3")
+    with col_bkg_5:
+        if st.session_state.bkg_img_4:
+            st.image(st.session_state.bkg_img_4, caption="Bkg 4")
+
+

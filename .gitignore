@@ -1,2 +1,5 @@
 venv/
 *.pem
+offset_image.jpg
+test image.jpg
+TEST.ipynb
