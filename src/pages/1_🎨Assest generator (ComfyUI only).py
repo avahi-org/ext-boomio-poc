@@ -245,8 +245,7 @@ with st.container():
         if st.button("Splitting background", key="button 4"):
             # Assuming 'image_path.png' is your image file
             # Create a BytesIO object from the image bytes
-            img = Image.open(st.session_state.generated_image_background)
-
+            img = st.session_state.generated_image_background
             # Example of saving to BytesIO and then passing
             buffer = io.BytesIO()
             img.save(buffer, format='PNG') # Save the image to the buffer
