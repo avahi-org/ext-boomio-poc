@@ -255,7 +255,7 @@ with st.container():
                                     buffer.seek(0) 
                                     img_obst_s3_key=save_img_s3_buffer("obstacle", buffer)
                                     dyna = DynamoAdapter(logger, TABLE_NAME)
-                                    dyna.save_chat_history_record(img_obst_s3_key, prompt_character)                                    
+                                    dyna.save_chat_history_record(img_obst_s3_key, prompt_obstacles)                                    
                                     st.session_state.generated_image_obstacle=generated_image_obstacles
                                 else:
                                     st.error("Failed to get prompt ID from the server response.")
@@ -333,7 +333,7 @@ with st.container():
             split_image_into_tiles(buffer, "output_tiles", 1, 4)
             img_bkg_s3_key=save_img_s3_file("background", "output_tiles")
             dyna = DynamoAdapter(logger, TABLE_NAME)
-            dyna.save_chat_history_record(img_bkg_s3_key, prompt_character) 
+            dyna.save_chat_history_record(img_bkg_s3_key, prompt_background) 
             st.session_state.bkg_img_1="output_tiles/tile_r0_c0.jpg"
             st.session_state.bkg_img_2="output_tiles/tile_r0_c1.jpg"
             st.session_state.bkg_img_3="output_tiles/tile_r0_c2.jpg"
