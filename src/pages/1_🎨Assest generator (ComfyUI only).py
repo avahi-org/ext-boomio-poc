@@ -69,7 +69,7 @@ def save_img_s3_buffer(prefix, buffer):
             if match:
                 num = int(match.group(1))
                 last_number = max(last_number, num)
-    s3_key = f"{prefix}/{prefix}_{last_number}.png"  # e.g. image_004.png
+    s3_key = f"avahi-boomio-genai-img/{prefix}/{prefix}_{last_number}.png"  # e.g. image_004.png
 
     print(f"Uploading {s3_key} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/{s3_key}")
     # Upload the BytesIO object to S3
@@ -94,7 +94,7 @@ def save_img_s3_file(prefix, path):
             if match:
                 num = int(match.group(1))
                 last_number = max(last_number, num)
-    s3_key = f"{prefix}/{prefix}_{last_number}.png"  # e.g. image_004.png
+    s3_key = f"avahi-boomio-genai-img/{prefix}/{prefix}_{last_number}.png"  # e.g. image_004.png
 
     print(f"Uploading {s3_key} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/{s3_key}")
     # Upload the BytesIO object to S3
