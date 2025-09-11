@@ -6,9 +6,15 @@ import re
 from PIL import Image
 from src.code.workflow import Workflow
 from src.code.config import Config
+from src.code.dynamo_adapter import DynamoAdapter
+import logging
 # --- Configuration ---
 # You need to replace this with your ComfyUI server address
 # The address should not include http:// or ws://
+
+TABLE_NAME = 'avahi-boomio-img-prompt-registry'
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 # --- App Configuration and Title ---
 st.set_page_config(
@@ -107,7 +113,8 @@ def save_img_s3_file(prefix, path):
                 s3_key=f"avahi-boomio-genai-img/{prefix}/background_{seq_num}/{relative_path}"
                 print(f"Uploading {local_path} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/background_{seq_num}/{relative_path}")
                 s3.upload_file(local_path, "avahi-boomio", s3_key)
-    return s3_key
+    s3_key_folder=f"s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/background_{seq_num}"
+    return s3_key_folder
 
 
 def split_image_into_tiles(image_path, output_dir, rows, cols):
@@ -184,7 +191,9 @@ with st.container():
                                     buffer = io.BytesIO()
                                     generated_image.save(buffer, format='PNG') # Save the image to the buffer
                                     buffer.seek(0) 
-                                    save_img_s3_buffer("character", buffer)
+                                    img_char_s3_key=save_img_s3_buffer("character", buffer)
+                                    dyna = DynamoAdapter(logger, TABLE_NAME)
+                                    dyna.save_chat_history_record(img_char_s3_key, prompt_character)
                                     st.session_state.generated_image_character=generated_image
                                 else:
                                     st.error("Failed to get prompt ID from the server response.")
@@ -243,7 +252,9 @@ with st.container():
                                     buffer = io.BytesIO()
                                     generated_image_obstacles.save(buffer, format='PNG') # Save the image to the buffer
                                     buffer.seek(0) 
-                                    save_img_s3_buffer("obstacle", buffer)
+                                    img_obst_s3_key=save_img_s3_buffer("obstacle", buffer)
+                                    dyna = DynamoAdapter(logger, TABLE_NAME)
+                                    dyna.save_chat_history_record(img_obst_s3_key, prompt_character)                                    
                                     st.session_state.generated_image_obstacle=generated_image_obstacles
                                 else:
                                     st.error("Failed to get prompt ID from the server response.")
@@ -319,7 +330,9 @@ with st.container():
             img.save(buffer, format='PNG') # Save the image to the buffer
             buffer.seek(0) # Rewind the buffer to the beginning
             split_image_into_tiles(buffer, "output_tiles", 1, 4)
-            save_img_s3_file("background", "output_tiles")
+            img_bkg_s3_key=save_img_s3_file("background", "output_tiles")
+            dyna = DynamoAdapter(logger, TABLE_NAME)
+            dyna.save_chat_history_record(img_bkg_s3_key, prompt_character) 
             st.session_state.bkg_img_1="output_tiles/tile_r0_c0.jpg"
             st.session_state.bkg_img_2="output_tiles/tile_r0_c1.jpg"
             st.session_state.bkg_img_3="output_tiles/tile_r0_c2.jpg"
