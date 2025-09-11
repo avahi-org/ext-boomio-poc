@@ -75,7 +75,7 @@ def save_img_s3_buffer(prefix, buffer):
     # Upload the BytesIO object to S3
     s3.upload_fileobj(
         buffer,
-        "avahi-boomio",
+        f"avahi-boomio/{prefix}",
         s3_key
     )
 
@@ -100,7 +100,7 @@ def save_img_s3_file(prefix, path):
     # Upload the BytesIO object to S3
     s3.upload_file(
         path,
-        "avahi-boomio",
+        f"avahi-boomio/{prefix}",
         s3_key
     )
 
