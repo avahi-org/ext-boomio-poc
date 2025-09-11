@@ -82,7 +82,8 @@ def save_img_s3_buffer(prefix, buffer):
         "avahi-boomio",
         s3_key
     )
-    return s3_key
+    s3_key_final = f"s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/{s3_key}"
+    return s3_key_final
 
 
 def save_img_s3_file(prefix, path):
