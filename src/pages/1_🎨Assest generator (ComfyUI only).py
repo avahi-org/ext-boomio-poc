@@ -1,6 +1,8 @@
 import streamlit as st
 import os
 import io
+import boto3
+import re
 from PIL import Image
 from src.code.workflow import Workflow
 from src.code.config import Config
@@ -50,6 +52,57 @@ if 'bkg_img_3' not in st.session_state:
     st.session_state.bkg_img_3 = []
 if 'bkg_img_4' not in st.session_state:
     st.session_state.bkg_img_4 = []
+
+
+
+def save_img_s3_buffer(prefix, buffer):
+    # Initialize S3 client
+    s3 = boto3.client("s3",)
+    # Regex to extract sequence numbers (e.g. image_001.png → 1)
+    pattern = re.compile(rf"{prefix}_(\d+)\.\w+$")
+    # 1. Get existing objects in the bucket
+    existing_objects = s3.list_objects_v2(Bucket="avahi-boomio", Prefix=f"avahi-boomio-genai-img/{prefix}")
+    last_number = 0
+    if "Contents" in existing_objects:
+        for obj in existing_objects["Contents"]:
+            match = pattern.search(obj["Key"])
+            if match:
+                num = int(match.group(1))
+                last_number = max(last_number, num)
+    s3_key = f"{prefix}_{last_number}.png"  # e.g. image_004.png
+
+    print(f"Uploading {s3_key} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/{s3_key}")
+    # Upload the BytesIO object to S3
+    s3.upload_fileobj(
+        buffer,
+        "avahi-boomio",
+        s3_key
+    )
+
+
+def save_img_s3_file(prefix, path):
+    # Initialize S3 client
+    s3 = boto3.client("s3",)
+    # Regex to extract sequence numbers (e.g. image_001.png → 1)
+    pattern = re.compile(rf"{prefix}_(\d+)\.\w+$")
+    # 1. Get existing objects in the bucket
+    existing_objects = s3.list_objects_v2(Bucket="avahi-boomio", Prefix=f"avahi-boomio-genai-img/{prefix}")
+    last_number = 0
+    if "Contents" in existing_objects:
+        for obj in existing_objects["Contents"]:
+            match = pattern.search(obj["Key"])
+            if match:
+                num = int(match.group(1))
+                last_number = max(last_number, num)
+    s3_key = f"{prefix}_{last_number}.png"  # e.g. image_004.png
+
+    print(f"Uploading {s3_key} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/{s3_key}")
+    # Upload the BytesIO object to S3
+    s3.upload_file(
+        path,
+        "avahi-boomio",
+        s3_key
+    )
 
 
 def split_image_into_tiles(image_path, output_dir, rows, cols):
@@ -122,6 +175,10 @@ with st.container():
                                     
                                     # Get the generated image
                                     generated_image = wrk.get_image(prompt_id)
+                                    buffer = io.BytesIO()
+                                    generated_image.save(buffer, format='PNG') # Save the image to the buffer
+                                    buffer.seek(0) 
+                                    save_img_s3_buffer("character", buffer)
                                     st.session_state.generated_image_character=generated_image
                                 else:
                                     st.error("Failed to get prompt ID from the server response.")
@@ -177,6 +234,10 @@ with st.container():
                                     
                                     # Get the generated image
                                     generated_image_obstacles = wrk.get_image(prompt_id_obstacles)
+                                    buffer = io.BytesIO()
+                                    generated_image_obstacles.save(buffer, format='PNG') # Save the image to the buffer
+                                    buffer.seek(0) 
+                                    save_img_s3_buffer("obstacle", buffer)
                                     st.session_state.generated_image_obstacle=generated_image_obstacles
                                 else:
                                     st.error("Failed to get prompt ID from the server response.")
@@ -252,6 +313,10 @@ with st.container():
             img.save(buffer, format='PNG') # Save the image to the buffer
             buffer.seek(0) # Rewind the buffer to the beginning
             split_image_into_tiles(buffer, "output_tiles", 1, 4)
+            save_img_s3_file("background", "output_tiles/tile_r0_c0.jpg")
+            save_img_s3_file("background", "output_tiles/tile_r0_c1.jpg")
+            save_img_s3_file("background", "output_tiles/tile_r0_c2.jpg")
+            save_img_s3_file("background", "output_tiles/tile_r0_c3.jpg")
             st.session_state.bkg_img_1="output_tiles/tile_r0_c0.jpg"
             st.session_state.bkg_img_2="output_tiles/tile_r0_c1.jpg"
             st.session_state.bkg_img_3="output_tiles/tile_r0_c2.jpg"
