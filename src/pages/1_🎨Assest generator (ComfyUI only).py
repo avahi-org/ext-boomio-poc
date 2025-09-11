@@ -76,30 +76,38 @@ def save_img_s3_buffer(prefix, buffer):
         "avahi-boomio",
         s3_key
     )
+    return s3_key
 
 
 def save_img_s3_file(prefix, path):
     # Initialize S3 client
     s3 = boto3.client("s3", region_name="eu-central-1")
-    # Regex to extract sequence numbers (e.g. image_001.png → 1)
-    pattern = re.compile(rf"avahi-boomio-genai-img/{prefix}_(\d+)\.\w+$")
-    # 1. Get existing objects in the bucket
-    existing_objects = s3.list_objects_v2(Bucket="avahi-boomio", Prefix=f"avahi-boomio-genai-img/{prefix}")
-    last_number = 0
-    if existing_objects["KeyCount"]==0:
-        last_number=0
-    else:
-        last_number=existing_objects["KeyCount"]
-
-    s3_key = f"avahi-boomio-genai-img/{prefix}/{prefix}_{last_number}.png"  # e.g. image_004.png
-
-    print(f"Uploading {s3_key} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/{s3_key}")
-    # Upload the BytesIO object to S3
-    s3.upload_file(
-        path,
-        "avahi-boomio",
-        s3_key
+    local_folder = path
+    ## Check number of folder in s3 prefix
+    response = s3.list_objects_v2(
+        Bucket="avahi-boomio",
+        Prefix="avahi-boomio-genai-img/background/",
+        Delimiter="/"   # treat "/" as folder separator
     )
+
+    folders = []
+    if "CommonPrefixes" in response:
+        folders = [prefix["Prefix"] for prefix in response["CommonPrefixes"]]
+    seq_num=len(folders)
+
+
+    # Walk through all files in the folder (recursively)
+    for root, dirs, files in os.walk(local_folder):
+        for filename in files:
+            if filename.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tiff")):
+                local_path = os.path.join(root, filename)
+                #s3://avahi-boomio/avahi-boomio-genai-img/background/
+                # Keep folder structure in S3
+                relative_path = os.path.relpath(local_path, local_folder)
+                s3_key=f"avahi-boomio-genai-img/{prefix}/background_{seq_num}/{relative_path}"
+                print(f"Uploading {local_path} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/background_{seq_num}/{relative_path}")
+                s3.upload_file(local_path, "avahi-boomio", s3_key)
+    return s3_key
 
 
 def split_image_into_tiles(image_path, output_dir, rows, cols):
@@ -124,6 +132,7 @@ def split_image_into_tiles(image_path, output_dir, rows, cols):
             # Save the tile
             tile_name = f"tile_r{r}_c{c}.jpg"
             tile.save(os.path.join(output_dir, tile_name))
+
 
 
 with st.container():
@@ -310,15 +319,12 @@ with st.container():
             img.save(buffer, format='PNG') # Save the image to the buffer
             buffer.seek(0) # Rewind the buffer to the beginning
             split_image_into_tiles(buffer, "output_tiles", 1, 4)
-
+            save_img_s3_file("background", "output_tiles")
             st.session_state.bkg_img_1="output_tiles/tile_r0_c0.jpg"
-            save_img_s3_file("background", st.session_state.bkg_img_1)
             st.session_state.bkg_img_2="output_tiles/tile_r0_c1.jpg"
-            save_img_s3_file("background", st.session_state.bkg_img_2)
             st.session_state.bkg_img_3="output_tiles/tile_r0_c2.jpg"
-            save_img_s3_file("background", st.session_state.bkg_img_3)
             st.session_state.bkg_img_4="output_tiles/tile_r0_c3.jpg"
-            save_img_s3_file("background", st.session_state.bkg_img_4)
+
     with col_bkg_2:
         if st.session_state.bkg_img_1:
             st.image(st.session_state.bkg_img_1, caption="Bkg 1")
