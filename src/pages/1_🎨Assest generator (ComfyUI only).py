@@ -313,14 +313,15 @@ with st.container():
             img.save(buffer, format='PNG') # Save the image to the buffer
             buffer.seek(0) # Rewind the buffer to the beginning
             split_image_into_tiles(buffer, "output_tiles", 1, 4)
-            save_img_s3_file("background", "output_tiles/tile_r0_c0.jpg")
-            save_img_s3_file("background", "output_tiles/tile_r0_c1.jpg")
-            save_img_s3_file("background", "output_tiles/tile_r0_c2.jpg")
-            save_img_s3_file("background", "output_tiles/tile_r0_c3.jpg")
+            
             st.session_state.bkg_img_1="output_tiles/tile_r0_c0.jpg"
+            save_img_s3_file("background", st.session_state.bkg_img_1)
             st.session_state.bkg_img_2="output_tiles/tile_r0_c1.jpg"
+            save_img_s3_file("background", st.session_state.bkg_img_2)
             st.session_state.bkg_img_3="output_tiles/tile_r0_c2.jpg"
+            save_img_s3_file("background", st.session_state.bkg_img_3)
             st.session_state.bkg_img_4="output_tiles/tile_r0_c3.jpg"
+            save_img_s3_file("background", st.session_state.bkg_img_4)
     with col_bkg_2:
         if st.session_state.bkg_img_1:
             st.image(st.session_state.bkg_img_1, caption="Bkg 1")
