@@ -57,18 +57,16 @@ if 'bkg_img_4' not in st.session_state:
 
 def save_img_s3_buffer(prefix, buffer):
     # Initialize S3 client
-    s3 = boto3.client("s3",)
+    s3 = boto3.client("s3", region_name="eu-central-1")
     # Regex to extract sequence numbers (e.g. image_001.png → 1)
     pattern = re.compile(rf"{prefix}_(\d+)\.\w+$")
     # 1. Get existing objects in the bucket
     existing_objects = s3.list_objects_v2(Bucket="avahi-boomio", Prefix=f"avahi-boomio-genai-img/{prefix}")
     last_number = 0
-    if "Contents" in existing_objects:
-        for obj in existing_objects["Contents"]:
-            match = pattern.search(obj["Key"])
-            if match:
-                num = int(match.group(1))
-                last_number = max(last_number, num)
+    if existing_objects["KeyCount"]==0:
+        last_number=0
+    else:
+        last_number=existing_objects["KeyCount"]
     s3_key = f"avahi-boomio-genai-img/{prefix}/{prefix}_{last_number}.png"  # e.g. image_004.png
 
     print(f"Uploading {s3_key} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/{s3_key}")
@@ -82,18 +80,17 @@ def save_img_s3_buffer(prefix, buffer):
 
 def save_img_s3_file(prefix, path):
     # Initialize S3 client
-    s3 = boto3.client("s3",)
+    s3 = boto3.client("s3", region_name="eu-central-1")
     # Regex to extract sequence numbers (e.g. image_001.png → 1)
-    pattern = re.compile(rf"{prefix}_(\d+)\.\w+$")
+    pattern = re.compile(rf"avahi-boomio-genai-img/{prefix}_(\d+)\.\w+$")
     # 1. Get existing objects in the bucket
     existing_objects = s3.list_objects_v2(Bucket="avahi-boomio", Prefix=f"avahi-boomio-genai-img/{prefix}")
     last_number = 0
-    if "Contents" in existing_objects:
-        for obj in existing_objects["Contents"]:
-            match = pattern.search(obj["Key"])
-            if match:
-                num = int(match.group(1))
-                last_number = max(last_number, num)
+    if existing_objects["KeyCount"]==0:
+        last_number=0
+    else:
+        last_number=existing_objects["KeyCount"]
+
     s3_key = f"avahi-boomio-genai-img/{prefix}/{prefix}_{last_number}.png"  # e.g. image_004.png
 
     print(f"Uploading {s3_key} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/{s3_key}")
@@ -313,7 +310,7 @@ with st.container():
             img.save(buffer, format='PNG') # Save the image to the buffer
             buffer.seek(0) # Rewind the buffer to the beginning
             split_image_into_tiles(buffer, "output_tiles", 1, 4)
-            
+
             st.session_state.bkg_img_1="output_tiles/tile_r0_c0.jpg"
             save_img_s3_file("background", st.session_state.bkg_img_1)
             st.session_state.bkg_img_2="output_tiles/tile_r0_c1.jpg"
