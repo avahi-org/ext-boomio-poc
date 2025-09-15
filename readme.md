@@ -10,7 +10,7 @@ Brandbook-based generation: upload a brandbook (PDF), extract consistent style g
 
 🏗️ System Architecture
 
-![Alt text](src\boomio_architecture.png?raw=true "Title")
+![Alt text](src\boomio_architecture.png?raw=true "System Architecture")
 
 ✨ Key Features
 
