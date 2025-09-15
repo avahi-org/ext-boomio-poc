@@ -8,6 +8,10 @@ Prompt-based generation: manually define prompts to generate assets.
 
 Brandbook-based generation: upload a brandbook (PDF), extract consistent style guidelines using AWS Bedrock, and automatically generate asset prompts.
 
+🏗️ System Architecture
+
+![Alt text](src\boomio_architecture.png?raw=true "Title")
+
 ✨ Key Features
 
 Generate Assets for Games
