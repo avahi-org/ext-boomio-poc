@@ -215,7 +215,7 @@ with st.container():
                 if workflow_obstacle:
                     with st.spinner("Processing..."):
                         # Update the workflow with a random seed
-                        workflow_obstacle = wrk.update_workflow_with_rdn_seed(workflow_obstacle, "5")
+                        workflow_obstacle = wrk.update_workflow_with_rdn_seed(workflow_obstacle, "2")
 
                         # Update the workflow with a new prompt
                         workflow_obstacle = wrk.update_workflow_with_prompt(workflow_obstacle, prompt_obstacles, "3")
@@ -269,10 +269,10 @@ with st.container():
                 if workflow_background:
                     with st.spinner("Processing..."):
                         # Update the workflow with a random seed
-                        workflow_background = wrk.update_workflow_with_rdn_seed(workflow_background, "1")
+                        workflow_background = wrk.update_workflow_with_rdn_seed(workflow_background, "5")
 
                         # Update the workflow with a new prompt
-                        workflow_background = wrk.update_workflow_with_prompt(workflow_background, prompt_background, "12")
+                        workflow_background = wrk.update_workflow_with_prompt(workflow_background, prompt_background, "3")
 
                         if workflow_background:
                             # Queue the prompt
