@@ -93,7 +93,7 @@ Open http://localhost:8501
 
 | File/Folder                  | Description                                                              |
 | ---------------------------- | ------------------------------------------------------------------------ |
-| `app.py`                     | The main Streamlit entry point for the application.                      |
+| `Landing.py`                     | The main Streamlit entry point for the application.                      |
 | `pages/`                     | Contains the different pages of the Streamlit application.               |
 | &nbsp;&nbsp;`1_🎨Assest generator (ComfyUI only).py`| Enables manual asset generation based on user prompts. |
 | &nbsp;&nbsp;`2_✨Brandbook asset generator.py`   | A specialized tool for generating assets from a brandbook, leveraging Bedrock and ComfyUI. |
@@ -108,7 +108,7 @@ Open http://localhost:8501
 
 
 🖥️ Streamlit Pages Overview
-🔹 Main App (app.py)
+🔹 Main App (Landing.py)
 
 Loads logo & title.
 
@@ -140,6 +140,8 @@ Background splitting: auto-splits into tiles (1×4) for endless runners.
 
 Shifting preview simulates side-scrolling effect.
 
+![Alt text](src/Boomio_POC_Diagram_Prompt_base.png?raw=true "Prompt base flow")
+
 🔹 2. Brandbook Asset Generator (Bedrock + ComfyUI)
 
 Located at: pages/2_✨Brandbook asset generator.py
@@ -159,6 +161,9 @@ Uses AWS Bedrock (Claude Sonnet) to extract consistent JSON prompts:
 Prompts are auto-inserted into ComfyUI workflows.
 
 Assets are generated with brand-consistent styling.
+
+
+![Alt text](src/Boomio_POC_Diagram_Brandbook_base.png?raw=true "Brand book base flow")
 
 ⚙️ Core Modules
 🔹 workflow.py
