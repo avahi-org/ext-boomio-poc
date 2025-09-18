@@ -405,7 +405,7 @@ with st.container():
 
     with col_bkg_1:
         st.header("Split background image")
-        if st.button("Splitting background", key="button 4"):
+        if st.button("Splitting background", key="button 5"):
             # Assuming 'image_path.png' is your image file
             # Create a BytesIO object from the image bytes
             img = st.session_state.generated_image_background
