@@ -1,5 +1,6 @@
 import streamlit as st
 import io
+import os
 import boto3
 import ast
 import json
@@ -9,8 +10,11 @@ import base64
 from PIL import Image
 from src.code.workflow import Workflow
 from src.code.config import Config
+from src.code.dynamo_adapter import DynamoAdapter
 import logging
 
+
+TABLE_NAME = 'avahi-boomio-img-prompt-registry'
 logger = logging.getLogger(__name__)
 # --- Configuration ---
 def recommendation_pipeline(document_bytes_1):
@@ -88,7 +92,7 @@ st.sidebar.header("Assest generator (Bedrock + ComfyUI)")
 st.markdown("##### This platform allows you to: \n" \
 "- Generate individual game assets (characters, obstacles, backgrounds) based on upload brandbook information and pre-processing.")
 st.markdown("##### Guidelines:")
-st.markdown("1. Write a prompt with the specifications for the game asset you want to generate.")
+st.markdown("1. Upload brand book pdf to extract information using AWS Bedrock and automatically generate prompts for each asset by clicking **Generate Prompt**")
 st.markdown("2. Click the **Generate Image** button to create the asset.")
 st.markdown("3. Repeat the process for each game asset, or create new ones by following the same steps.")
 
@@ -96,6 +100,8 @@ col_aux1, col_aux2 = st.columns([1, 1])
 col1, col2 = st.columns([1, 1])
 col3, col4 = st.columns([1, 1])
 col5, col6 = st.columns([1, 1])
+col_bkg_1, col_bkg_2, col_bkg_3, col_bkg_4, col_bkg_5= st.columns([2, 2, 2, 2, 2])
+col_bkg_shift_1, col_bkg_shift_2, col_bkg_shift_3, col_bkg_shift_4, col_bkg_shift_5= st.columns([2, 2, 2, 2, 2])
 
 if 'generated_image_character' not in st.session_state:
     st.session_state.generated_image_character = []
@@ -106,6 +112,94 @@ if 'generated_image_obstacle' not in st.session_state:
 if 'generated_image_background' not in st.session_state:
     st.session_state.generated_image_background = []
 
+if 'bkg_img_1' not in st.session_state:
+    st.session_state.bkg_img_1 = []
+if 'bkg_img_2' not in st.session_state:
+    st.session_state.bkg_img_2 = []
+if 'bkg_img_3' not in st.session_state:
+    st.session_state.bkg_img_3 = []
+if 'bkg_img_4' not in st.session_state:
+    st.session_state.bkg_img_4 = []
+
+def save_img_s3_buffer(prefix, buffer):
+    # Initialize S3 client
+    s3 = boto3.client("s3", region_name="eu-central-1")
+    # Regex to extract sequence numbers (e.g. image_001.png → 1)
+    pattern = re.compile(rf"{prefix}_(\d+)\.\w+$")
+    # 1. Get existing objects in the bucket
+    existing_objects = s3.list_objects_v2(Bucket="avahi-boomio", Prefix=f"avahi-boomio-genai-img/{prefix}")
+    last_number = 0
+    if existing_objects["KeyCount"]==0:
+        last_number=0
+    else:
+        last_number=existing_objects["KeyCount"]
+    s3_key = f"avahi-boomio-genai-img/{prefix}/{prefix}_{last_number}.png"  # e.g. image_004.png
+
+    print(f"Uploading {s3_key} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/{s3_key}")
+    # Upload the BytesIO object to S3
+    s3.upload_fileobj(
+        buffer,
+        "avahi-boomio",
+        s3_key
+    )
+    s3_key_final = f"s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/{s3_key}"
+    return s3_key_final
+
+
+def save_img_s3_file(prefix, path):
+    # Initialize S3 client
+    s3 = boto3.client("s3", region_name="eu-central-1")
+    local_folder = path
+    ## Check number of folder in s3 prefix
+    response = s3.list_objects_v2(
+        Bucket="avahi-boomio",
+        Prefix="avahi-boomio-genai-img/background/",
+        Delimiter="/"   # treat "/" as folder separator
+    )
+
+    folders = []
+    if "CommonPrefixes" in response:
+        folders = [prefix["Prefix"] for prefix in response["CommonPrefixes"]]
+    seq_num=len(folders)
+
+
+    # Walk through all files in the folder (recursively)
+    for root, dirs, files in os.walk(local_folder):
+        for filename in files:
+            if filename.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tiff")):
+                local_path = os.path.join(root, filename)
+                #s3://avahi-boomio/avahi-boomio-genai-img/background/
+                # Keep folder structure in S3
+                relative_path = os.path.relpath(local_path, local_folder)
+                s3_key=f"avahi-boomio-genai-img/{prefix}/background_{seq_num}/{relative_path}"
+                print(f"Uploading {local_path} -> s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/background_{seq_num}/{relative_path}")
+                s3.upload_file(local_path, "avahi-boomio", s3_key)
+    s3_key_folder=f"s3://avahi-boomio/avahi-boomio-genai-img/{prefix}/background_{seq_num}"
+    return s3_key_folder
+
+
+def split_image_into_tiles(image_path, output_dir, rows, cols):
+    img = Image.open(image_path)
+    img_width, img_height = img.size
+    tile_width = img_width // cols
+    tile_height = img_height // rows
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for r in range(rows):
+        for c in range(cols):
+            left = c * tile_width
+            upper = r * tile_height
+            right = left + tile_width
+            lower = upper + tile_height
+
+            # Crop the tile
+            tile = img.crop((left, upper, right, lower))
+
+            # Save the tile
+            tile_name = f"tile_r{r}_c{c}.jpg"
+            tile.save(os.path.join(output_dir, tile_name))
 
 with st.container():
     with col_aux1:
@@ -176,6 +270,12 @@ with st.container():
                                     
                                     # Get the generated image
                                     generated_image = wrk.get_image(prompt_id)
+                                    buffer = io.BytesIO()
+                                    generated_image.save(buffer, format='PNG') # Save the image to the buffer
+                                    buffer.seek(0) 
+                                    img_char_s3_key=save_img_s3_buffer("character", buffer)
+                                    dyna = DynamoAdapter(logger, TABLE_NAME)
+                                    dyna.save_chat_history_record(img_char_s3_key, prompt_character)
                                     st.session_state.generated_image_character=generated_image
                                 else:
                                     st.error("Failed to get prompt ID from the server response.")
@@ -231,6 +331,12 @@ with st.container():
                                     
                                     # Get the generated image
                                     generated_image_obstacles = wrk.get_image(prompt_id_obstacles)
+                                    buffer = io.BytesIO()
+                                    generated_image_obstacles.save(buffer, format='PNG') # Save the image to the buffer
+                                    buffer.seek(0) 
+                                    img_obst_s3_key=save_img_s3_buffer("obstacle", buffer)
+                                    dyna = DynamoAdapter(logger, TABLE_NAME)
+                                    dyna.save_chat_history_record(img_obst_s3_key, prompt_obstacles) 
                                     st.session_state.generated_image_obstacle=generated_image_obstacles
                                 else:
                                     st.error("Failed to get prompt ID from the server response.")
@@ -292,3 +398,59 @@ with st.container():
                             st.error("Failed to update the workflow. Please check your workflow file.")
         if st.session_state.generated_image_background:
             st.image(st.session_state.generated_image_background, caption="Generated background")
+
+
+
+with st.container():
+
+    with col_bkg_1:
+        st.header("Split background image")
+        if st.button("Splitting background", key="button 4"):
+            # Assuming 'image_path.png' is your image file
+            # Create a BytesIO object from the image bytes
+            img = st.session_state.generated_image_background
+            # Example of saving to BytesIO and then passing
+            buffer = io.BytesIO()
+            img.save(buffer, format='PNG') # Save the image to the buffer
+            buffer.seek(0) # Rewind the buffer to the beginning
+            split_image_into_tiles(buffer, "output_tiles", 1, 4)
+            img_bkg_s3_key=save_img_s3_file("background", "output_tiles")
+            dyna = DynamoAdapter(logger, TABLE_NAME)
+            dyna.save_chat_history_record(img_bkg_s3_key, prompt_background) 
+            st.session_state.bkg_img_1="output_tiles/tile_r0_c0.jpg"
+            st.session_state.bkg_img_2="output_tiles/tile_r0_c1.jpg"
+            st.session_state.bkg_img_3="output_tiles/tile_r0_c2.jpg"
+            st.session_state.bkg_img_4="output_tiles/tile_r0_c3.jpg"
+
+    with col_bkg_2:
+        if st.session_state.bkg_img_1:
+            st.image(st.session_state.bkg_img_1, caption="Bkg 1")
+    with col_bkg_3:
+        if st.session_state.bkg_img_2:
+            st.image(st.session_state.bkg_img_2, caption="Bkg 2")
+    with col_bkg_4:
+        if st.session_state.bkg_img_3:
+            st.image(st.session_state.bkg_img_3, caption="Bkg 3")
+    with col_bkg_5:
+        if st.session_state.bkg_img_4:
+            st.image(st.session_state.bkg_img_4, caption="Bkg 4")
+
+with st.container():
+
+    with col_bkg_shift_1:
+        st.header("Moving background image")
+
+    with col_bkg_shift_2:
+        if st.session_state.bkg_img_3:
+            st.image(st.session_state.bkg_img_3, caption="Shift Bkg 3")
+    with col_bkg_shift_3:
+        if st.session_state.bkg_img_4:
+            st.image(st.session_state.bkg_img_4, caption="Shift Bkg 4")
+    with col_bkg_shift_4:
+        if st.session_state.bkg_img_1:
+            st.image(st.session_state.bkg_img_1, caption="Shift Bkg 1")
+    with col_bkg_shift_5:
+        if st.session_state.bkg_img_2:
+            st.image(st.session_state.bkg_img_2, caption="Shift Bkg 2")
+
+
